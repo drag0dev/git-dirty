@@ -1,5 +1,8 @@
 use std::env::args;
 use walkdir::WalkDir;
+use git::test_repo;
+
+pub mod git;
 
 fn main() {
     // take the provided path or default to current dir
@@ -20,7 +23,7 @@ fn main() {
 
             // only open the directories that end with .git
             if meta.is_dir() && path.ends_with(".git") {
-                println!("{}", path);
+                test_repo(&path);
             }
 
         } else {
