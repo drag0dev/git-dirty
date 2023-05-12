@@ -1,8 +1,11 @@
+use anyhow::{Result, Context};
 use git2::{Status, RepositoryState};
 
-pub fn test_repo(dir: &str) {
-    let repo = git2::Repository::open(dir).unwrap();
-    let statuses = repo.statuses(None).unwrap();
+pub fn test_repo(dir: &str) -> Result<()> {
+    let repo = git2::Repository::open(dir)
+        .context("reading git repository")?;
+    let statuses = repo.statuses(None)
+        .context("reading statuses")?;
 
     let mut collected_statuses = Vec::with_capacity(statuses.len());
 
@@ -19,6 +22,7 @@ pub fn test_repo(dir: &str) {
     filter_index_statuses(&collected_statuses);
     filter_working_directory_statuses(&collected_statuses);
     count_ignored(&collected_statuses);
+    Ok(())
 }
 
 pub fn filter_working_directory_statuses(statuses: &Vec<(String, Status)>) {
