@@ -1,4 +1,4 @@
-use git2::Status;
+use git2::{Status, RepositoryState};
 
 pub fn test_repo(dir: &str) {
     let repo = git2::Repository::open(dir).unwrap();
@@ -15,6 +15,7 @@ pub fn test_repo(dir: &str) {
         collected_statuses.push((path, status));
     }
 
+    check_state(repo.state());
     filter_index_statuses(&collected_statuses);
     filter_working_directory_statuses(&collected_statuses);
     count_ignored(&collected_statuses);
@@ -88,5 +89,11 @@ pub fn count_ignored(statuses: &Vec<(String, Status)>) {
 
     if count != 0 {
         println!("{} ignored files", count);
+    }
+}
+
+pub fn check_state(state: RepositoryState) {
+    if state != RepositoryState::Clean {
+        println!("-- REPOSITORY STATE: {:?} --", state);
     }
 }
