@@ -17,6 +17,7 @@ pub fn test_repo(dir: &str) {
 
     filter_index_statuses(&collected_statuses);
     filter_working_directory_statuses(&collected_statuses);
+    count_ignored(&collected_statuses);
 }
 
 pub fn filter_working_directory_statuses(statuses: &Vec<(String, Status)>) {
@@ -76,5 +77,16 @@ pub fn filter_index_statuses(statuses: &Vec<(String, Status)>) {
         for status in deleted { println!("Deleted: {}", status.0); }
         for status in typechange { println!("Typechange: {}", status.0); }
         for status in renamed { println!("Renamed: {}", status.0); }
+    }
+}
+
+pub fn count_ignored(statuses: &Vec<(String, Status)>) {
+    let mut count = 0;
+    for status in statuses {
+        if status.1 == Status::IGNORED { count += 1; }
+    }
+
+    if count != 0 {
+        println!("{} ignored files", count);
     }
 }
