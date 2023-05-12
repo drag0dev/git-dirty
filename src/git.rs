@@ -1,7 +1,6 @@
-use anyhow::Result;
 use git2::Status;
 
-pub fn test_repo(dir: &str) -> Result<()> {
+pub fn test_repo(dir: &str) {
     let repo = git2::Repository::open(dir).unwrap();
     let statuses = repo.statuses(None).unwrap();
 
@@ -17,7 +16,6 @@ pub fn test_repo(dir: &str) -> Result<()> {
     }
 
     filter_index_statuses(&collected_statuses);
-    Ok(())
 }
 
 pub fn filter_index_statuses(statuses: &Vec<(String, Status)>) {
