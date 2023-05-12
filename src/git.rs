@@ -15,6 +15,7 @@ pub fn test_repo(dir: &str) {
         collected_statuses.push((path, status));
     }
 
+    filter_index_statuses(&collected_statuses);
     filter_working_directory_statuses(&collected_statuses);
 }
 
@@ -40,6 +41,36 @@ pub fn filter_working_directory_statuses(statuses: &Vec<(String, Status)>) {
         println!("No dirty files in the working directory");
     } else {
         println!("Dirty files in the working directory:");
+        for status in new { println!("New: {}", status.0); }
+        for status in modified { println!("Modified: {}", status.0); }
+        for status in deleted { println!("Deleted: {}", status.0); }
+        for status in typechange { println!("Typechange: {}", status.0); }
+        for status in renamed { println!("Renamed: {}", status.0); }
+    }
+}
+
+pub fn filter_index_statuses(statuses: &Vec<(String, Status)>) {
+    let mut new = Vec::new();
+    let mut modified = Vec::new();
+    let mut deleted = Vec::new();
+    let mut typechange = Vec::new();
+    let mut renamed = Vec::new();
+    for status in statuses {
+        match status.1 {
+            Status::INDEX_NEW => new.push(status),
+            Status::INDEX_MODIFIED => modified.push(status),
+            Status::INDEX_DELETED => deleted.push(status),
+            Status::INDEX_TYPECHANGE => typechange.push(status),
+            Status::INDEX_RENAMED => renamed.push(status),
+            _ => {}
+        }
+    }
+
+    if new.len() == 0 && modified.len() == 0 && deleted.len() == 0 &&
+        typechange.len() == 0 && renamed.len() == 0 {
+        println!("No dirty files in the index");
+    } else {
+        println!("Dirty files in the index:");
         for status in new { println!("New: {}", status.0); }
         for status in modified { println!("Modified: {}", status.0); }
         for status in deleted { println!("Deleted: {}", status.0); }
