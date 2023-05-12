@@ -15,10 +15,10 @@ pub fn test_repo(dir: &str) {
         collected_statuses.push((path, status));
     }
 
-    filter_index_statuses(&collected_statuses);
+    filter_working_directory_statuses(&collected_statuses);
 }
 
-pub fn filter_index_statuses(statuses: &Vec<(String, Status)>) {
+pub fn filter_working_directory_statuses(statuses: &Vec<(String, Status)>) {
     let mut new = Vec::new();
     let mut modified = Vec::new();
     let mut deleted = Vec::new();
