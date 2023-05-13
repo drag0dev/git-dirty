@@ -1,4 +1,5 @@
 use std::env::args;
+use colored::Colorize;
 use walkdir::WalkDir;
 use git::test_repo;
 
@@ -15,7 +16,7 @@ fn main() {
             let path = entry.path().to_string_lossy();
             let meta = entry.metadata();
             if let Err(e) = meta.as_ref() {
-                println!("error reading metadata for {}: {}", path, e);
+                println!("{} {}: {}", "error reading metadata for".red(), path, e);
                 continue;
             }
 
@@ -24,11 +25,11 @@ fn main() {
             // only open the directories that end with .git
             if meta.is_dir() && path.ends_with(".git") {
                 if let Err(e) = test_repo(&path) {
-                    println!("{}: {}", e, e.root_cause());
+                    println!("{} {}: {}", "error".red(), e.to_string().red(), e.root_cause());
                 }
             }
         } else {
-            println!("Error reading a directory entry: {}", entry.err().unwrap());
+            println!("{}: {}", "error reading a directory entry".red(), entry.err().unwrap());
         }
     }
 }
