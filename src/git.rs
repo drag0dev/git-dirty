@@ -3,8 +3,19 @@ use colored::Colorize;
 use git2::{Status, RepositoryState};
 
 pub fn test_repo(dir: &str) -> Result<()> {
-    let repo = git2::Repository::open(dir)
+    let mut repo = git2::Repository::open(dir)
         .context("reading git repository")?;
+
+    let mut stash_count = 0;
+    _ = repo.stash_foreach(|_, _, _| {
+        stash_count += 1;
+        true
+    }).context("iterating over stashes")?;
+    stash_present(stash_count);
+
+    // immutable repo
+    let repo = repo;
+
     let statuses = repo.statuses(None)
         .context("reading statuses")?;
 
@@ -103,5 +114,11 @@ pub fn check_state(state: RepositoryState) {
             "-- REPOSITORY STATE:".red().bold(),
             format!("{:?}", state).red().bold(),
             "--".red().bold());
+    }
+}
+
+pub fn stash_present(stash_count: usize) {
+    if stash_count > 0 {
+        println!("{} {}", "Number of stashed changes:".red(), stash_count);
     }
 }
