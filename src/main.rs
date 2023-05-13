@@ -24,9 +24,13 @@ fn main() {
 
             // only open the directories that end with .git
             if meta.is_dir() && path.ends_with(".git") {
+                println!("Repository: {}", path.strip_suffix("/.git").unwrap());
+                println!("{}", "-".repeat(30));
                 if let Err(e) = test_repo(&path) {
                     println!("{} {}: {}", "error".red(), e.to_string().red(), e.root_cause());
                 }
+                println!("{}", "-".repeat(30));
+                println!();
             }
         } else {
             println!("{}: {}", "error reading a directory entry".red(), entry.err().unwrap());
